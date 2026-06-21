@@ -1,13 +1,12 @@
-import io
 from datetime import timedelta
 
 from django.contrib.auth.models import User
-from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from apps.articles.models import Article, Auteur, Categorie, Tag
 from apps.core.models import ParametresSite
+from apps.core.seed_utils import fetch_cover
 
 # --- Rubriques orientées "développeur / tech" -------------------------------
 RUBRIQUES = [
@@ -113,25 +112,6 @@ ARTICLES = [
 ]
 
 
-def cover(seed_color=(245, 166, 35)):
-    """Couverture or/ambre sur fond noir (charte du site)."""
-    from PIL import Image, ImageDraw
-
-    w, h = 1200, 675
-    img = Image.new("RGB", (w, h), (10, 10, 10))
-    draw = ImageDraw.Draw(img)
-    for y in range(h):
-        t = y / h
-        r = int(10 + t * 120)
-        g = int(10 + t * 70)
-        b = int(5 + t * 10)
-        draw.line([(0, y), (w, y)], fill=(r, g, b))
-    draw.ellipse([w - 360, -120, w + 120, 360], fill=seed_color)
-    buf = io.BytesIO()
-    img.save(buf, format="JPEG", quality=82)
-    return ContentFile(buf.getvalue(), name="cover.jpg")
-
-
 class Command(BaseCommand):
     help = "Contenu réel : site d'Augustin Idohou (remplace la démo Ensoleillé)."
 
@@ -201,7 +181,7 @@ class Command(BaseCommand):
                 date_publication=now - timedelta(days=i, hours=i * 2),
                 nombre_vues=(len(ARTICLES) - i) * 95,
             )
-            art.image_couverture.save("cover.jpg", cover(), save=False)
+            art.image_couverture.save("cover.jpg", fetch_cover(f"augustin-{i}"), save=False)
             art.save()
             art.tags.set(get_tags(data["tags"]))
             created += 1
