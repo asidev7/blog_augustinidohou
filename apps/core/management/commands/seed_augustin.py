@@ -165,6 +165,14 @@ class Command(BaseCommand):
             return objs
 
         # --- Articles -----------------------------------------------------
+        kw_par_rub = {
+            "Portrait": "developer,laptop,startup",
+            "ASITECH": "startup,office,technology",
+            "Projets": "fintech,cryptocurrency,money",
+            "Développement": "programming,code,computer",
+            "Intelligence Artificielle": "artificial-intelligence,technology",
+            "Tutoriels": "code,programming,keyboard",
+        }
         now = timezone.now()
         created = 0
         for i, data in enumerate(ARTICLES):
@@ -181,7 +189,11 @@ class Command(BaseCommand):
                 date_publication=now - timedelta(days=i, hours=i * 2),
                 nombre_vues=(len(ARTICLES) - i) * 95,
             )
-            art.image_couverture.save("cover.jpg", fetch_cover(f"augustin-{i}"), save=False)
+            art.image_couverture.save(
+                "cover.jpg",
+                fetch_cover(f"augustin-{i}", keywords=kw_par_rub.get(data["rub"], "developer,technology")),
+                save=False,
+            )
             art.save()
             art.tags.set(get_tags(data["tags"]))
             created += 1

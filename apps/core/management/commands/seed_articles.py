@@ -1414,6 +1414,18 @@ class Command(BaseCommand):
                 objs.append(tag_cache[n])
             return objs
 
+        # Mots-clés d'image par rubrique (loremflickr renvoie une vraie photo du thème)
+        kw_par_rub = {
+            "Web3": "blockchain,cryptocurrency",
+            "DevOps": "server,datacenter,code",
+            "Développement": "programming,code,computer",
+            "Intelligence Artificielle": "artificial-intelligence,technology",
+            "Mobile": "smartphone,mobile,app",
+            "Fintech": "finance,money,fintech",
+            "Tutoriels": "code,programming,keyboard",
+            "Portrait": "developer,laptop,startup",
+        }
+
         now = timezone.now()
         created = skipped = 0
         for i, data in enumerate(ARTICLES):
@@ -1437,7 +1449,11 @@ class Command(BaseCommand):
                 date_publication=now - timedelta(days=2 + i, hours=i),
                 nombre_vues=(len(ARTICLES) - i) * 23 + 40,
             )
-            art.image_couverture.save("cover.jpg", fetch_cover(f"blog-{i}"), save=False)
+            art.image_couverture.save(
+                "cover.jpg",
+                fetch_cover(f"blog-{i}", keywords=kw_par_rub.get(data["rub"], "technology")),
+                save=False,
+            )
             art.save()
             art.tags.set(get_tags(data["tags"]))
             created += 1

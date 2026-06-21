@@ -21,15 +21,27 @@ def _gradient(color=(245, 166, 35)):
     return ContentFile(buf.getvalue(), name="cover.jpg")
 
 
-def fetch_cover(seed, w=1200, h=675):
-    """Télécharge une image de couverture en ligne (placeholder Picsum, stable par `seed`).
-    Repli automatique sur un dégradé local si le réseau est indisponible."""
-    url = f"https://picsum.photos/seed/{seed}/{w}/{h}.jpg"
-    try:
-        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        data = urlopen(req, timeout=20).read()
-        if data and len(data) > 2000:
-            return ContentFile(data, name=f"{seed}.jpg")
-    except Exception:
-        pass
+def fetch_cover(seed, keywords="technology", w=1200, h=675):
+    """Récupère une image de couverture EN LIGNE, pertinente par mots-clés.
+
+    1) loremflickr : vraie photo en lien avec `keywords` (stable grâce à `lock`).
+    2) placehold.co : image placeholder aux couleurs du site (repli réseau).
+    3) dégradé local : ultime repli si aucun réseau n'est disponible.
+    """
+    import hashlib
+
+    lock = int(hashlib.md5(str(seed).encode()).hexdigest(), 16) % 100000
+    kw = keywords.replace(" ", "")
+    sources = [
+        f"https://loremflickr.com/{w}/{h}/{kw}?lock={lock}",
+        f"https://placehold.co/{w}x{h}/0a0a0a/F5A623/jpg?text=Augustin+Idohou",
+    ]
+    for url in sources:
+        try:
+            req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            data = urlopen(req, timeout=10).read()
+            if data and len(data) > 2000:
+                return ContentFile(data, name=f"{seed}.jpg")
+        except Exception:
+            continue
     return _gradient()
