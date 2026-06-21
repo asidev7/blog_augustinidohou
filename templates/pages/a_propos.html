@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load icons %}
+{% block title %}À propos — {{ parametres.nom_site }}{% endblock %}
+{% block content %}
+<section class="degrade-solaire text-white">
+  <div class="max-w-3xl mx-auto px-4 py-14 text-center">
+    <span class="font-script text-ensoleille-jaune text-4xl">&lt;/&gt;</span>
+    <h1 class="font-titre text-3xl sm:text-4xl font-extrabold mt-3">{{ parametres.nom_site }}</h1>
+    <p class="mt-3 text-ensoleille-creme/90">{{ parametres.slogan }}</p>
+    <div class="mt-5 flex flex-wrap justify-center gap-2 text-xs font-medium">
+      <span class="rounded-full bg-white/10 border border-white/15 px-3 py-1">Développement web</span>
+      <span class="rounded-full bg-white/10 border border-white/15 px-3 py-1">Intelligence artificielle</span>
+      <span class="rounded-full bg-white/10 border border-white/15 px-3 py-1">Web3 &amp; blockchain</span>
+      <span class="rounded-full bg-white/10 border border-white/15 px-3 py-1">Architecture logicielle</span>
+    </div>
+  </div>
+</section>
+<div class="max-w-3xl mx-auto px-4 py-10 prose-ensoleille">
+  <p>{{ parametres.description }}</p>
+  <h2>Qui suis-je ?</h2>
+  <p>Je suis <strong>Augustin Idohou</strong>, développeur et ingénieur logiciel. Sur ce carnet je partage ce que je construis et ce que j'apprends : code, intelligence artificielle, applications Web3 et conception de systèmes. Des tutoriels concrets, des retours d'expérience honnêtes et un peu de veille.</p>
+  <h2>Ce que vous trouverez ici</h2>
+  <ul>
+    <li><strong>Tutoriels</strong> — du pas-à-pas reproductible, pas de magie noire.</li>
+    <li><strong>Retours d'expérience</strong> — ce qui a marché, ce qui a cassé, et pourquoi.</li>
+    <li><strong>Veille tech</strong> — outils, modèles d'IA et patterns qui valent le détour.</li>
+  </ul>
+  <h2>Ma philosophie</h2>
+  <blockquote>Du code clair, des explications honnêtes, et des choses qui marchent vraiment.</blockquote>
+  <p><a href="{% url 'core:contact' %}" class="inline-flex items-center gap-1">Me contacter {% icon "arrow-right" "h-4 w-4" %}</a></p>
+</div>
+{% endblock %}
