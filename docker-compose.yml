@@ -28,7 +28,7 @@ services:
       - ./media:/app/media
     ports:
       # Exposé uniquement en local : le Nginx de l'hôte fait le reverse-proxy.
-      - "127.0.0.1:8001:8000"
+      - "127.0.0.1:8011:8000"
 
 volumes:
   pgdata:
