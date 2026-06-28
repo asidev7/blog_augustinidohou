@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Projets — Idohou Augustin{% endblock %}
+{% block meta_description %}Sélection de projets en production : SaaS e-commerce, fintech, billetterie, immobilier — Django, PostgreSQL, Docker.{% endblock %}
+
+{% block content %}
+<section class="pt-32 px-6 pb-24" x-data="{ filter: 'all' }">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-12" data-aos="fade-up">
+      <span class="text-primary font-mono text-sm tracking-widest uppercase">// tous les projets</span>
+      <h1 class="font-display font-bold text-5xl md:text-6xl mt-2">Projets</h1>
+      <p class="text-muted font-body text-lg mt-4 max-w-2xl">Des plateformes réelles, en production, pensées pour passer à l'échelle.</p>
+    </div>
+
+    <!-- Filtres -->
+    <div class="flex flex-wrap gap-3 mb-12" data-aos="fade-up">
+      <button @click="filter='all'" :class="filter==='all' ? 'bg-primary text-white' : 'border border-border text-muted hover:border-primary hover:text-primary'" class="px-5 py-2 rounded-lg font-mono text-sm transition-all">Tous</button>
+      {% for cat in categories %}
+      <button @click="filter='{{ cat.0 }}'" :class="filter==='{{ cat.0 }}' ? 'bg-primary text-white' : 'border border-border text-muted hover:border-primary hover:text-primary'" class="px-5 py-2 rounded-lg font-mono text-sm transition-all">{{ cat.1 }}</button>
+      {% endfor %}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {% for project in projects %}
+      <div x-show="filter==='all' || filter==='{{ project.category }}'" x-transition>
+        {% include 'partials/_project_card.html' with project=project delay=0 %}
+      </div>
+      {% empty %}
+      <p class="text-muted font-mono col-span-2">Aucun projet pour le moment.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

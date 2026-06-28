@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FAQ — Idohou Augustin{% endblock %}
+{% block meta_description %}Questions fréquentes sur mes services de développement web, délais, stack technique, déploiement et collaboration.{% endblock %}
+
+{% block content %}
+<section class="pt-32 px-6 pb-24">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <span class="text-primary font-mono text-sm tracking-widest uppercase">// faq</span>
+      <h1 class="font-display font-bold text-4xl md:text-5xl mt-2">Questions fréquentes</h1>
+    </div>
+    <div class="space-y-4" x-data="{ open: null }">
+      {% for faq in faqs %}
+      <div class="rounded-2xl border border-border bg-gradient-card overflow-hidden transition-all" :class="open === {{ forloop.counter }} ? 'border-primary/40' : ''" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}50">
+        <button @click="open === {{ forloop.counter }} ? open = null : open = {{ forloop.counter }}" class="w-full flex items-center justify-between px-7 py-5 text-left group">
+          <span class="font-display font-medium text-lg group-hover:text-primary transition-colors">{{ faq.question }}</span>
+          <span class="text-primary text-xl transition-transform duration-300 ml-4" :class="open === {{ forloop.counter }} ? 'rotate-45' : ''">+</span>
+        </button>
+        <div x-show="open === {{ forloop.counter }}" x-collapse class="px-7 pb-5">
+          <p class="text-muted font-body leading-relaxed">{{ faq.answer }}</p>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-muted font-mono text-center">Aucune question pour le moment.</p>
+      {% endfor %}
+    </div>
+
+    <div class="mt-16 text-center p-10 rounded-2xl border border-border bg-gradient-card" data-aos="fade-up">
+      <h2 class="font-display font-bold text-2xl mb-3">Une autre question ?</h2>
+      <p class="text-muted font-body mb-6">Écrivez-moi, je réponds vite.</p>
+      <a href="{% url 'contact' %}" class="inline-flex items-center gap-2 px-7 py-3 bg-primary text-white font-display font-bold rounded-lg hover:bg-accent transition-all duration-300">Me contacter →</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

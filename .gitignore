@@ -9,6 +9,9 @@ env/
 venv/
 .venv/
 
+# Node / Tailwind
+node_modules/
+
 # Django
 *.log
 db.sqlite3

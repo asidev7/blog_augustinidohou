@@ -1,29 +1,105 @@
-{% extends "base.html" %}
-{% block title %}Contact — {{ parametres.nom_site }}{% endblock %}
-{% block content %}
-<div class="max-w-3xl mx-auto px-4 py-10">
-  <h1 class="font-titre text-3xl font-extrabold mb-2">Contactez-nous</h1>
-  <p class="text-ensoleille-gris mb-8">Une information, une réaction, un partenariat publicitaire ? Écrivez-nous.</p>
+{% extends 'base.html' %}
+{% load static %}
 
-  <div class="grid md:grid-cols-3 gap-8">
-    <div class="md:col-span-2 bg-white rounded-xl border border-ensoleille-bordure/60 p-6">
-      <form method="post" class="space-y-4">
-        {% csrf_token %}
-        <input type="text" name="site" class="hidden" tabindex="-1" aria-hidden="true">
-        <div class="grid sm:grid-cols-2 gap-4">
-          <input type="text" name="nom" required placeholder="Votre nom *" class="rounded-lg border border-ensoleille-bordure px-3 py-2 outline-none focus:border-ensoleille-or">
-          <input type="email" name="email" required placeholder="Votre email *" class="rounded-lg border border-ensoleille-bordure px-3 py-2 outline-none focus:border-ensoleille-or">
+{% block title %}Contact — Idohou Augustin{% endblock %}
+{% block meta_description %}Discutons architecture, stack et délais. Contactez Idohou Augustin pour votre projet web, SaaS, API, DevOps ou IA.{% endblock %}
+
+{% block content %}
+<section class="pt-32 px-6 pb-24">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
+
+    <div data-aos="fade-right">
+      <span class="text-primary font-mono text-sm tracking-widest uppercase">// contact</span>
+      <h1 class="font-display font-bold text-4xl md:text-5xl mt-2 mb-8">Travaillons<br>ensemble.</h1>
+      <p class="text-muted font-body text-lg mb-12 leading-relaxed">
+        Un brief précis ou juste une idée ? Parlons architecture, stack et délais.
+      </p>
+
+      <div class="space-y-6">
+        <a href="mailto:{{ SITE.email }}" class="flex items-center gap-4 group">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors text-primary text-lg">✉</div>
+          <div>
+            <div class="text-muted font-mono text-xs uppercase tracking-widest">Email</div>
+            <div class="font-medium group-hover:text-primary transition-colors">{{ SITE.email }}</div>
+          </div>
+        </a>
+        <a href="{{ SITE.whatsapp_link }}" target="_blank" rel="noopener" class="flex items-center gap-4 group">
+          <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors text-primary text-lg">📱</div>
+          <div>
+            <div class="text-muted font-mono text-xs uppercase tracking-widest">WhatsApp</div>
+            <div class="font-medium group-hover:text-primary transition-colors">{{ SITE.whatsapp }}</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="mt-12">
+        <div class="text-muted font-mono text-xs uppercase tracking-widest mb-4">Retrouvez-moi</div>
+        <div class="flex flex-wrap gap-3">
+          {% include 'partials/_socials.html' %}
         </div>
-        <input type="text" name="sujet" placeholder="Sujet" class="w-full rounded-lg border border-ensoleille-bordure px-3 py-2 outline-none focus:border-ensoleille-or">
-        <textarea name="message" required rows="6" placeholder="Votre message *" class="w-full rounded-lg border border-ensoleille-bordure px-3 py-2 outline-none focus:border-ensoleille-or"></textarea>
-        <button class="rounded-lg bg-ensoleille-or px-6 py-3 font-semibold text-ensoleille-noir hover:bg-ensoleille-ambre">Envoyer</button>
+      </div>
+    </div>
+
+    <div data-aos="fade-left">
+      {% if messages %}
+      <div class="mb-6 space-y-3">
+        {% for message in messages %}
+        <div class="px-5 py-4 rounded-lg font-mono text-sm border {% if message.tags == 'success' %}border-success/30 bg-success/10 text-success{% else %}border-red-500/30 bg-red-500/10 text-red-400{% endif %}">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'contact' %}" class="space-y-6 p-8 rounded-2xl border border-border bg-gradient-card">
+        {% csrf_token %}
+
+        <!-- Honeypot -->
+        <div class="hidden" aria-hidden="true">
+          <label>Ne pas remplir<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        </div>
+
+        <div>
+          <label for="id_name" class="block font-mono text-xs text-muted uppercase tracking-widest mb-2">Votre nom</label>
+          <input id="id_name" type="text" name="name" required value="{{ form.name.value|default:'' }}" class="w-full bg-dark border border-border rounded-lg px-5 py-3.5 text-white font-body focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors placeholder:text-muted/50" placeholder="Nom complet">
+          {% for error in form.name.errors %}<p class="text-red-400 text-xs font-mono mt-1">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div>
+          <label for="id_email" class="block font-mono text-xs text-muted uppercase tracking-widest mb-2">Email</label>
+          <input id="id_email" type="email" name="email" required value="{{ form.email.value|default:'' }}" class="w-full bg-dark border border-border rounded-lg px-5 py-3.5 text-white font-body focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors placeholder:text-muted/50" placeholder="vous@exemple.com">
+          {% for error in form.email.errors %}<p class="text-red-400 text-xs font-mono mt-1">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div>
+          <label for="id_subject" class="block font-mono text-xs text-muted uppercase tracking-widest mb-2">Sujet</label>
+          <input id="id_subject" type="text" name="subject" value="{{ form.subject.value|default:'' }}" class="w-full bg-dark border border-border rounded-lg px-5 py-3.5 text-white font-body focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors placeholder:text-muted/50" placeholder="Objet de votre message">
+        </div>
+
+        <div>
+          <label for="id_project_type" class="block font-mono text-xs text-muted uppercase tracking-widest mb-2">Type de projet</label>
+          <select id="id_project_type" name="project_type" class="w-full bg-dark border border-border rounded-lg px-5 py-3.5 text-white font-body focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors">
+            <option value="">Sélectionner</option>
+            <option value="web">Application web</option>
+            <option value="saas">Plateforme SaaS</option>
+            <option value="api">API / Backend</option>
+            <option value="devops">DevOps / Déploiement</option>
+            <option value="ai">Intégration IA</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="id_message" class="block font-mono text-xs text-muted uppercase tracking-widest mb-2">Votre message</label>
+          <textarea id="id_message" name="message" rows="5" required class="w-full bg-dark border border-border rounded-lg px-5 py-3.5 text-white font-body focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-colors placeholder:text-muted/50 resize-none" placeholder="Décrivez votre besoin technique...">{{ form.message.value|default:'' }}</textarea>
+          {% for error in form.message.errors %}<p class="text-red-400 text-xs font-mono mt-1">{{ error }}</p>{% endfor %}
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-primary text-white font-display font-bold rounded-lg hover:bg-accent transition-all duration-300 hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]">
+          Envoyer le message →
+        </button>
       </form>
     </div>
-    <div class="space-y-4 text-sm">
-      {% if parametres.email_contact %}<div><strong class="block text-ensoleille-gris uppercase text-xs">Email</strong>{{ parametres.email_contact }}</div>{% endif %}
-      {% if parametres.telephone %}<div><strong class="block text-ensoleille-gris uppercase text-xs">Téléphone</strong>{{ parametres.telephone }}</div>{% endif %}
-      {% if parametres.whatsapp %}<div><strong class="block text-ensoleille-gris uppercase text-xs">WhatsApp</strong>{{ parametres.whatsapp }}</div>{% endif %}
-    </div>
   </div>
-</div>
+</section>
 {% endblock %}

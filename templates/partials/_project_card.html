@@ -1,0 +1,31 @@
+<div class="group rounded-2xl border border-border bg-gradient-card overflow-hidden hover:border-primary/40 transition-all duration-500 hover:-translate-y-1" data-aos="fade-up" data-aos-delay="{{ delay|default:0 }}00">
+  <div class="relative aspect-video overflow-hidden">
+    {% if project.image %}
+    <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+    {% else %}
+    <div class="w-full h-full bg-gradient-tech flex items-center justify-center relative overflow-hidden">
+      <div class="absolute inset-0 bg-dot-grid [background-size:18px_18px] opacity-20"></div>
+      <span class="relative font-display font-bold text-3xl text-white/90 tracking-tight">{{ project.title }}</span>
+    </div>
+    {% endif %}
+    {% if project.is_live %}
+    <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success/20 border border-success/30 text-success text-xs font-mono backdrop-blur">
+      <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span> live
+    </span>
+    {% endif %}
+  </div>
+  <div class="p-6">
+    <span class="text-accent font-mono text-xs uppercase tracking-widest">{{ project.get_category_display }}</span>
+    <h3 class="font-display font-bold text-xl mt-2 mb-2 group-hover:text-primary transition-colors">{{ project.title }}</h3>
+    <p class="text-muted font-body text-sm leading-relaxed mb-4">{{ project.short_desc }}</p>
+    <div class="flex flex-wrap gap-2 mb-4">
+      {% for tech in project.tech_list %}
+      <span class="px-2 py-1 rounded bg-surface border border-border text-light/70 text-xs font-mono">{{ tech }}</span>
+      {% endfor %}
+    </div>
+    <div class="flex gap-4 text-sm font-mono">
+      {% if project.github_url %}<a href="{{ project.github_url }}" target="_blank" rel="noopener" class="text-muted hover:text-primary transition-colors">code →</a>{% endif %}
+      {% if project.live_url %}<a href="{{ project.live_url }}" target="_blank" rel="noopener" class="text-muted hover:text-accent transition-colors">live →</a>{% endif %}
+    </div>
+  </div>
+</div>

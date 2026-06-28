@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} — Blog · Idohou Augustin{% endblock %}
+{% block meta_description %}{{ post.excerpt }}{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .article-prose { color: #cbd5e1; }
+  .article-prose h2 { font-family: 'Sora', sans-serif; color: #fff; font-weight: 700; font-size: 1.6rem; margin: 2.2rem 0 1rem; }
+  .article-prose h3 { font-family: 'Sora', sans-serif; color: #fff; font-weight: 600; font-size: 1.25rem; margin: 1.8rem 0 .75rem; }
+  .article-prose p { margin: 1rem 0; line-height: 1.8; }
+  .article-prose ul { margin: 1rem 0; padding-left: 1.25rem; list-style: disc; }
+  .article-prose ol { margin: 1rem 0; padding-left: 1.25rem; list-style: decimal; }
+  .article-prose li { margin: .4rem 0; }
+  .article-prose a { color: #38BDF8; text-decoration: underline; }
+  .article-prose strong { color: #fff; }
+  .article-prose code { font-family: 'JetBrains Mono', monospace; background: #111118; border: 1px solid #1E1E28; color: #38BDF8; padding: .15rem .4rem; border-radius: .35rem; font-size: .85em; }
+  .article-prose pre { font-family: 'JetBrains Mono', monospace; background: #111118; border: 1px solid #1E1E28; color: #e2e8f0; padding: 1.1rem 1.25rem; border-radius: .75rem; overflow-x: auto; margin: 1.5rem 0; font-size: .85rem; line-height: 1.6; }
+  .article-prose pre code { background: none; border: 0; padding: 0; color: inherit; }
+  .article-prose blockquote { border-left: 3px solid #2563EB; padding-left: 1.1rem; color: #94a3b8; font-style: italic; margin: 1.5rem 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<article class="pt-32 px-6 pb-24">
+  <div class="max-w-3xl mx-auto">
+
+    <a href="{% url 'blog:list' %}" class="font-mono text-sm text-muted hover:text-primary transition-colors">← retour au blog</a>
+
+    <header class="mt-8 mb-10" data-aos="fade-up">
+      <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-muted mb-5">
+        {% if post.category %}<a href="{{ post.category.get_absolute_url }}" class="text-accent uppercase tracking-widest hover:underline">{{ post.category.name }}</a><span>·</span>{% endif %}
+        <span>{{ post.reading_time }} min de lecture</span>
+        <span>·</span>
+        <span>{{ post.published_at|date:"d F Y" }}</span>
+      </div>
+      <h1 class="font-display font-bold text-3xl md:text-5xl leading-tight">{{ post.title }}</h1>
+      <p class="text-light/70 font-body text-lg mt-5 leading-relaxed">{{ post.excerpt }}</p>
+      <div class="flex items-center gap-3 mt-6 pt-6 border-t border-border">
+        <div class="w-10 h-10 rounded-full bg-primary/15 border border-primary/40 flex items-center justify-center font-display font-bold text-primary text-sm">IA</div>
+        <div>
+          <div class="font-display font-medium text-sm">{{ post.author }}</div>
+          <div class="text-muted font-mono text-xs">Backend · DevOps · AI</div>
+        </div>
+      </div>
+    </header>
+
+    {% if post.cover %}
+    <div class="rounded-2xl border border-border overflow-hidden mb-10" data-aos="fade-up">
+      <img src="{{ post.cover.url }}" alt="{{ post.title }}" class="w-full">
+    </div>
+    {% endif %}
+
+    <div class="article-prose font-body" data-aos="fade-up">
+      {{ post.content|safe }}
+    </div>
+
+    <!-- CTA bas d'article -->
+    <div class="mt-14 p-8 rounded-2xl border border-border bg-gradient-card text-center">
+      <h2 class="font-display font-bold text-2xl mb-2">Un projet similaire en tête ?</h2>
+      <p class="text-muted font-body mb-6">Parlons de votre besoin technique.</p>
+      <a href="{% url 'contact' %}" class="inline-flex items-center gap-2 px-7 py-3 bg-primary text-white font-display font-bold rounded-lg hover:bg-accent transition-all duration-300">Me contacter →</a>
+    </div>
+  </div>
+
+  <!-- Articles liés -->
+  {% if related %}
+  <div class="max-w-3xl mx-auto mt-20">
+    <h2 class="font-display font-bold text-2xl mb-8">À lire aussi</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      {% for r in related %}
+      <a href="{{ r.get_absolute_url }}" class="group p-6 rounded-2xl border border-border bg-gradient-card hover:border-primary/40 transition-all duration-500">
+        {% if r.category %}<span class="font-mono text-xs text-accent uppercase tracking-widest">{{ r.category.name }}</span>{% endif %}
+        <h3 class="font-display font-bold text-lg mt-2 group-hover:text-primary transition-colors">{{ r.title }}</h3>
+        <p class="text-muted font-body text-sm mt-2 leading-relaxed">{{ r.excerpt|truncatewords:18 }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</article>
+{% endblock %}

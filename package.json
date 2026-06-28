@@ -1,0 +1,15 @@
+{
+  "name": "augustin-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio d'Augustin Sande Idohou — Backend · DevOps · AI",
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/css/src.css -o ./static/css/main.css --minify",
+    "watch:css": "tailwindcss -i ./static/css/src.css -o ./static/css/main.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
+    "tailwindcss": "^3.4.17"
+  }
+}

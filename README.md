@@ -1,80 +1,112 @@
-# Rédaction Ensoleillé — La Presse
+# Portfolio — Augustin Sande Idohou
 
-> **« Ensoleillé, lumière sur l'obscurité ! »**
-> Plateforme média / blog d'actualité en **Django 5/6 + Tailwind CSS (CDN) + Alpine.js**, aux couleurs or/ambre sur fond noir (« le soleil dans la nuit »).
+Portfolio personnel d'**Augustin Sande Idohou** — Backend Developer · DevOps · AI Engineer,
+fondateur de **ASITECH SOLUTION**.
 
-## ✨ Fonctionnalités
+Stack : **Django 5 · Tailwind CSS 3 · Alpine.js · GSAP / AOS**. Dark mode technique, animations
+sobres, focus sur le code et les projets en production.
 
-- **Articles** : couverture + crédit, titre, date/heure, chapô, contenu riche (gras, italique, citations), catégories, tags, auteurs, temps de lecture auto, compteur de vues, SEO (OG + JSON-LD `NewsArticle`).
-- **Une / Urgent / Épinglé**, bandeau de unes défilant, « Les plus lus ».
-- **Commentaires** sans compte, fil de réponses, modération, anti-spam (honeypot + throttling IP).
-- **Régie publicitaire interne** (`Publicite`) par emplacement (header, sidebar, in-article après le 3ᵉ paragraphe, between, footer, popup) + **Google AdSense** (Auto Ads ou slots manuels) + `ads.txt`.
-- **Tableau de bord personnalisé** `/dashboard/` (pas l'admin Django brut) : vue d'ensemble + graphe Chart.js, CRUD articles, modération commentaires, pubs + AdSense, rubriques/tags, auteurs, newsletter (export CSV), paramètres du site.
-- **Recherche** plein-texte (PostgreSQL `SearchVector`, repli `icontains` en SQLite).
-- **SEO** : `sitemap.xml`, `robots.txt`, flux **RSS** (global + par rubrique), Open Graph.
-- **Mode nuit** (Alpine + localStorage), bandeau **RGPD/cookies**, pages **404/500** personnalisées.
+---
 
-## 🚀 Installation
+## 🚀 Démarrage rapide (développement)
 
 ```bash
-# 1. Dépendances
+# 1. Dépendances Python (venv recommandé)
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 # 2. Configuration
-cp .env.example .env        # ajustez SECRET_KEY ; DATABASE_URL vide = SQLite
+cp .env.example .env        # facultatif en dev : SQLite + DEBUG par défaut
 
-# 3. Base de données + données de démo
+# 3. Build du CSS Tailwind (Node requis)
+npm install
+npm run build:css           # ou `npm run watch:css` pendant le dev
+
+# 4. Base de données + contenu réel
 python manage.py migrate
-python manage.py seed       # rubriques + 5 articles + 1 pub + compte admin
+python manage.py seed        # peuple projets, skills, services, FAQ, etc.
+python manage.py createsuperuser
 
-# 4. Lancement
+# 5. Lancer
 python manage.py runserver
 ```
 
-- Site public : <http://127.0.0.1:8000/>
-- Tableau de bord : <http://127.0.0.1:8000/dashboard/> — **admin / ensoleille2026**
-- Admin Django (secours) : <http://127.0.0.1:8000/admin/>
-
-## 🐘 PostgreSQL (production)
-
-Renseignez dans `.env` :
-
-```
-DATABASE_URL=postgres://user:password@localhost:5432/ensoleille
-DEBUG=False
-ALLOWED_HOSTS=votre-domaine.bj
-```
-
-Puis `python manage.py migrate`. La recherche plein-texte française s'active automatiquement sous PostgreSQL.
-
-## 🎨 Charte
-
-| or | ambre | jaune | noir | crème |
-|----|-------|-------|------|-------|
-| `#F5A623` | `#FF8C00` | `#FFC107` | `#0A0A0A` | `#FFF8E7` |
-
-Header/footer/hero **noir-or**, lecture des articles sur **fond blanc**, dégradé solaire réservé au hero. Polices : *Great Vibes* (logo), *Playfair Display* (titres), *Inter* (corps).
-
-## 🏗️ Architecture
-
-```
-config/            settings, urls, wsgi
-apps/articles/     Article, Categorie, Tag, Auteur + vues publiques
-apps/comments/     Commentaire + modération
-apps/ads/          Publicite, AdSenseConfig + ad_slot
-apps/core/         ParametresSite, newsletter, contact, SEO (sitemap/rss/robots/ads.txt)
-apps/dashboard/    interface d'administration personnalisée
-templates/         base, partials/, pages/, dashboard/
-```
-
-## 📦 Déploiement (Gunicorn + Nginx)
-
-```bash
-python manage.py collectstatic --noinput
-gunicorn config.wsgi:application --bind 0.0.0.0:8000
-```
-
-Servez `/static/` et `/media/` via Nginx, placez les secrets dans `.env`, `DEBUG=False`.
+Site sur http://127.0.0.1:8000 · Admin sur http://127.0.0.1:8000/admin/
 
 ---
-*Rédaction Ensoleillé — lumière sur l'obscurité.*
+
+## 🧱 Structure
+
+```
+augustin_portfolio/   # config Django (settings, urls, wsgi, asgi)
+core/                 # portfolio : Project, Skill, Service, Experience,
+                      #   Testimonial, FAQ, Stat, About, Value + seed
+blog/                 # blog : Category, Post (liste paginée, détail, sitemap)
+templates/            # base, partials/, pages/, blog/
+static/               # css (src + main compilé), js, img (logo/og SVG)
+tailwind.config.js    # thème (couleurs : Sora display + Inter + JetBrains Mono)
+package.json          # build Tailwind CLI
+```
+
+Typo : **Sora** (titres) · **Inter** (corps) · **JetBrains Mono** (code/tags).
+Les icônes de compétences proviennent du CDN **Simple Icons** (slug défini par skill dans l'admin).
+
+## 🎨 CSS Tailwind
+
+Le CSS est compilé par le **CLI Tailwind v3** depuis `static/css/src.css` vers
+`static/css/main.css` (déjà inclus). Après toute modification des templates :
+
+```bash
+npm run build:css
+```
+
+## 🗄️ Contenu
+
+Tout le contenu (projets, compétences, services, expériences, témoignages, FAQ, stats) est
+géré via l'**admin Django**. La commande `python manage.py seed` injecte les données réelles
+de départ (idempotent ; `--fresh` pour réinitialiser). Les visuels de projets s'uploadent
+depuis l'admin (un visuel de repli dégradé s'affiche en l'absence d'image).
+
+---
+
+## 📦 Production
+
+```bash
+# variables d'env via .env (DEBUG=False, SECRET_KEY, ALLOWED_HOSTS, DATABASE_URL...)
+npm run build:css
+python manage.py migrate
+python manage.py collectstatic --noinput   # servi par WhiteNoise (gzip + manifest)
+gunicorn augustin_portfolio.wsgi:application --bind 0.0.0.0:8000
+```
+
+- **Statiques** : WhiteNoise (`CompressedManifestStaticFilesStorage`).
+- **Sécurité** : HSTS, cookies secure, SSL redirect, nosniff activés automatiquement quand
+  `DEBUG=False`.
+- **SEO** : `sitemap.xml`, `robots.txt`, meta OpenGraph/Twitter et JSON-LD `Person` par page.
+
+## ✍️ Blog
+
+Articles gérés dans l'admin (`Blog › Posts`). Le contenu est du **HTML** (rendu stylé via la
+classe `.article-prose`). Catégories filtrables, article « à la une » (`is_featured`), pagination,
+articles liés et sitemap automatiques. 5 articles de démo sont injectés par `seed`.
+
+## 📄 CV dynamique
+
+La page **`/cv/`** est générée depuis les modèles (`About`, `Experience`, `Education`,
+`Certification`, `Language`, `Skill`) : mise en page imprimable (bouton **Imprimer / PDF**) +
+**téléchargement du PDF** réel.
+
+La **photo** (`maphoto.png`) et le **CV PDF** (`CV-DEV2025.pdf`) sont versionnés à la racine du
+dépôt. `python manage.py seed` les (re)génère automatiquement dans `media/about/` (photo optimisée
+en JPEG 640px) et les rattache au modèle `About` — donc rien à uploader sur un nouveau déploiement,
+il suffit de lancer `seed`.
+
+## ✅ À personnaliser
+
+- **Photo + CV** : remplace `maphoto.png` / `CV-DEV2025.pdf` à la racine puis relance `seed`,
+  ou upload direct dans l'admin → *À propos* (`photo`, `resume`). Sans photo, un avatar « IA »
+  s'affiche.
+- **Mission / approche / intro** : admin → *À propos* (ou `seed.py`).
+- Email / WhatsApp / LinkedIn → `core/context_processors.py` (`site_info`).
+- Icônes de skills : champ `icon` (slug Simple Icons) par compétence dans l'admin.
+- Visuels projets / couvertures d'articles / avatars témoignages → admin.

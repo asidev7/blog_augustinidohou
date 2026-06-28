@@ -1,0 +1,38 @@
+<footer class="border-t border-border bg-surface py-16 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div class="md:col-span-2">
+        <span class="font-display font-bold text-2xl">Idohou Augustin</span>
+        <p class="text-muted font-body leading-relaxed max-w-xs mt-4">
+          Backend Developer · DevOps · AI Engineer. Je construis des plateformes web prêtes pour la production.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-8">
+          {% include 'partials/_socials.html' %}
+        </div>
+      </div>
+      <div>
+        <h4 class="font-mono text-xs text-muted uppercase tracking-widest mb-6">Navigation</h4>
+        <ul class="space-y-3 font-body">
+          <li><a href="{% url 'home' %}" class="text-light/70 hover:text-primary transition-colors">Accueil</a></li>
+          <li><a href="{% url 'about' %}" class="text-light/70 hover:text-primary transition-colors">À propos</a></li>
+          <li><a href="{% url 'projects' %}" class="text-light/70 hover:text-primary transition-colors">Projets</a></li>
+          <li><a href="{% url 'services' %}" class="text-light/70 hover:text-primary transition-colors">Services</a></li>
+          <li><a href="{% url 'blog:list' %}" class="text-light/70 hover:text-primary transition-colors">Blog</a></li>
+          <li><a href="{% url 'contact' %}" class="text-light/70 hover:text-primary transition-colors">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-mono text-xs text-muted uppercase tracking-widest mb-6">Contact</h4>
+        <ul class="space-y-3 font-body text-sm">
+          <li><a href="mailto:{{ SITE.email }}" class="text-light/70 hover:text-primary transition-colors">{{ SITE.email }}</a></li>
+          <li><a href="{{ SITE.whatsapp_link }}" target="_blank" rel="noopener" class="text-light/70 hover:text-primary transition-colors">WhatsApp</a></li>
+          <li><a href="{{ SITE.agency_url }}" target="_blank" rel="noopener" class="text-light/70 hover:text-primary transition-colors">ASITECH SOLUTION →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-muted font-mono text-xs">© {% now "Y" %} Idohou Augustin. Tous droits réservés.</p>
+      <p class="text-muted font-mono text-xs">Conçu &amp; développé par <span class="text-primary">moi-même ✦</span></p>
+    </div>
+  </div>
+</footer>

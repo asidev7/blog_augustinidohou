@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}CV — {{ about.full_name }}{% endblock %}
+{% block meta_description %}Curriculum vitae d'{{ about.full_name }} — Développeur Full Stack, DevOps & Administrateur Système Linux. Parcours, compétences, certifications.{% endblock %}
+
+{% block extra_css %}
+<style>
+  @media print {
+    nav, footer, #cursor-dot, #cursor-ring, .no-print { display: none !important; }
+    body { background: #fff !important; color: #111 !important; }
+    .cv-sheet { box-shadow: none !important; border: 0 !important; }
+    .cv-print-text { color: #111 !important; }
+    .cv-print-muted { color: #444 !important; }
+    .cv-accent { color: #2563EB !important; }
+    @page { margin: 1.2cm; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pt-28 px-6 pb-20">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Barre d'action (non imprimée) -->
+    <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <span class="text-primary font-mono text-sm tracking-widest uppercase">// curriculum vitae</span>
+        <h1 class="font-display font-bold text-3xl md:text-4xl mt-1">Mon CV</h1>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        {% if about.resume %}
+        <a href="{{ about.resume.url }}" download class="px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-accent transition-all duration-300 hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] text-sm">
+          Télécharger le PDF ↓
+        </a>
+        {% endif %}
+        <button onclick="window.print()" class="px-5 py-2.5 border border-border text-light hover:border-primary hover:text-primary rounded-lg transition-all duration-300 font-mono text-sm">
+          Imprimer
+        </button>
+      </div>
+    </div>
+
+    <!-- Feuille CV -->
+    <div class="cv-sheet rounded-2xl border border-border bg-gradient-card overflow-hidden">
+
+      <!-- En-tête -->
+      <div class="p-8 md:p-10 border-b border-border flex flex-col sm:flex-row items-center sm:items-start gap-6">
+        <div class="relative shrink-0">
+          <div class="absolute -inset-1.5 bg-gradient-to-tr from-primary/40 to-accent/30 rounded-2xl blur-lg opacity-60 no-print"></div>
+          <div class="relative w-28 h-28 rounded-2xl overflow-hidden border border-border">
+            {% if about.photo %}
+            <img src="{{ about.photo.url }}" alt="{{ about.full_name }}" class="w-full h-full object-cover">
+            {% else %}
+            <div class="w-full h-full bg-gradient-tech flex items-center justify-center font-display font-bold text-3xl text-white">IA</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="text-center sm:text-left flex-1">
+          <h2 class="font-display font-bold text-3xl cv-print-text">{{ about.full_name }}</h2>
+          <p class="font-mono text-accent text-sm mt-1 cv-accent">{{ about.headline }}</p>
+          <div class="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-1.5 mt-4 font-mono text-xs text-muted cv-print-muted">
+            <span>✉ {{ SITE.email }}</span>
+            <span>☎ {{ SITE.phone }}</span>
+            <span>⚲ {{ SITE.location }}</span>
+            <span>⚇ {{ SITE.website_handle }}</span>
+            <span>⌥ {{ SITE.github_handle }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3">
+        <!-- Colonne gauche -->
+        <div class="md:col-span-1 p-8 md:border-r border-border space-y-8 bg-dark/30">
+
+          <div>
+            <h3 class="font-display font-bold text-sm uppercase tracking-widest text-primary mb-3 cv-accent">Profil</h3>
+            <p class="text-muted text-sm leading-relaxed font-body cv-print-muted">{{ about.intro }}</p>
+          </div>
+
+          <div>
+            <h3 class="font-display font-bold text-sm uppercase tracking-widest text-primary mb-3 cv-accent">Compétences</h3>
+            <div class="space-y-4">
+              {% for cat, skills in skills_by_category.items %}
+              <div>
+                <div class="font-mono text-[11px] text-muted uppercase tracking-widest mb-1.5 cv-print-muted">{{ cat }}</div>
+                <div class="flex flex-wrap gap-1.5">
+                  {% for skill in skills %}
+                  <span class="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-light text-xs font-mono cv-print-text">{{ skill.name }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-display font-bold text-sm uppercase tracking-widest text-primary mb-3 cv-accent">Langues</h3>
+            <ul class="space-y-1.5">
+              {% for lg in languages %}
+              <li class="flex justify-between text-sm font-body">
+                <span class="text-light cv-print-text">{{ lg.name }}</span>
+                <span class="text-muted font-mono text-xs cv-print-muted">{{ lg.level }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-display font-bold text-sm uppercase tracking-widest text-primary mb-3 cv-accent">Certifications</h3>
+            <ul class="space-y-2">
+              {% for c in certifications %}
+              <li class="text-sm font-body">
+                <span class="text-light cv-print-text">{{ c.name }}</span>
+                {% if c.status %}<span class="block font-mono text-[11px] text-accent cv-accent">{{ c.status }}</span>{% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Colonne droite -->
+        <div class="md:col-span-2 p-8 space-y-8">
+
+          <div>
+            <h3 class="font-display font-bold text-sm uppercase tracking-widest text-primary mb-5 cv-accent">Expérience professionnelle</h3>
+            <div class="space-y-6">
+              {% for exp in experiences %}
+              <div>
+                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                  <h4 class="font-display font-bold text-base cv-print-text">{{ exp.role }} <span class="text-muted font-normal cv-print-muted">· {{ exp.company }}</span></h4>
+                  <span class="font-mono text-xs text-accent cv-accent">{{ exp.period }}</span>
+                </div>
+                <ul class="mt-2 space-y-1">
+                  {% for line in exp.description.splitlines %}{% if line.strip %}
+                  <li class="text-sm text-muted font-body leading-relaxed pl-4 relative cv-print-muted">
+                    <span class="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-primary"></span>{{ line }}
+                  </li>
+                  {% endif %}{% endfor %}
+                </ul>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-display font-bold text-sm uppercase tracking-widest text-primary mb-5 cv-accent">Formation</h3>
+            <div class="space-y-4">
+              {% for ed in education %}
+              <div>
+                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                  <h4 class="font-display font-bold text-base cv-print-text">{{ ed.degree }}</h4>
+                  <span class="font-mono text-xs text-accent cv-accent">{{ ed.period }}</span>
+                </div>
+                <p class="text-sm text-muted font-body cv-print-muted">{{ ed.school }}{% if ed.detail %} · {{ ed.detail }}{% endif %}</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
